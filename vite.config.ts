@@ -5,6 +5,7 @@ import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/mtg-j25-foundations-catalog/',
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
