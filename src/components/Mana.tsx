@@ -1,6 +1,8 @@
+import type { ReactNode } from "react";
 import clsx from "clsx";
 
 interface ManaProps {
+	children?: ReactNode;
 	text?: string;
 	type?: string;
 }

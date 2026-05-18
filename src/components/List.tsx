@@ -1,14 +1,18 @@
 import { Activity } from "react";
+import type MTGCard from "@/types/MTGCard";
 import type MTGDeck from "@/types/MTGDeck";
 import ListItem from "./ListItem";
+
+type DeckCategory = Exclude<keyof MTGDeck, "color" | "id" | "iteration" | "name">;
 
 export interface ListProps {
 	category: string;
 	deck: MTGDeck;
 }
 
-const List = ({ category, deck }: ListProps) => {	
-	const cards = deck?.[category.toLowerCase()] ?? [];
+const List = ({ category, deck }: ListProps) => {
+	const key = category.toLowerCase() as DeckCategory;
+	const cards: MTGCard[] = deck?.[key] ?? [];
 
 	return (
 		<Activity mode={cards.length === 0 ? "hidden" : "visible"}>

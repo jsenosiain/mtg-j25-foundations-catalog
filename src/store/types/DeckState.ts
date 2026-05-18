@@ -14,4 +14,4 @@ interface DeckState {
 	sorceries?: StoreState[];
 }
 
-export default DeckState;
+export type { DeckState as default };

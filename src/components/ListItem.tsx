@@ -12,10 +12,10 @@ const ListItem = ({ card }: ListItemProps) => {
 			<details className="w-full">
 				<summary className="flex justify-between gap-2 truncate">
 					<span>{card.name}</span>
-					<ManaCost cost={card.mana_cost} />
+					<ManaCost cost={card.mana_cost ?? ""} />
 				</summary>
 				<p className="flex-1 flex flex-col justify-end gap-2 text-sm text-gray-500 p-4">
-					{card.oracle_text.split("\n").map((line, index) => (
+					{card.oracle_text?.split("\n").map((line, index) => (
 						<span key={index}>{line}</span>)
 					)}
 				</p>

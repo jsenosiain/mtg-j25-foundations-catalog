@@ -22,12 +22,14 @@
     "noFallthroughCasesInSwitch": true,
 
     /* Path aliases */
-    "baseUrl": ".",
     "paths": {
-      "@/components/*": ["src/components/*"],
-      "@/store/*": ["src/store/*"],
-      "@/types/*": ["src/types/*"],
-      "@/utilities/*": ["src/utilities/*"]
+      "@/components": ["./src/components/index.ts"],
+      "@/components/*": ["./src/components/*"],
+      "@/store": ["./src/store/index.ts"],
+      "@/store/*": ["./src/store/*"],
+      "@/types/*": ["./src/types/*"],
+      "@/utilities": ["./src/utilities/index.ts"],
+      "@/utilities/*": ["./src/utilities/*"]
     }
   },
   "include": ["src"]

@@ -1,12 +1,13 @@
 import Mana from "./Mana";
 
-const parseBraces = (str: string) => {
+const parseBraces = (str: string): (string | number)[] => {
   const regex = /\{(.*?)\}/g;
-  
-  return Array.from(str.matchAll(regex),(m) => {
+
+  return Array.from(str.matchAll(regex), (m) => {
     const value = m[1];
-    
-    return !isNaN(value) ? Number(value) : value;
+    const num = Number(value);
+
+    return !Number.isNaN(num) ? num : value;
   });
 };
 
@@ -20,11 +21,11 @@ const ManaCost = ({ cost }: ManaCost) => {
 	return (
 		<div className="flex gap-2 items-center">
 			{braces.map((coin, index) => {
-				if (Number.isInteger(coin)) {
+				if (typeof coin === "number") {
 					return <Mana type="C" key={index}>{coin}</Mana>;
 				}
 
-				switch (coin) {				
+				switch (coin) {
 					case "X":
 						return <Mana type="C" key={index}>X</Mana>;
 					default:

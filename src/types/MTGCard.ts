@@ -30,4 +30,4 @@ interface MTGCard {
   updated_at: string;
 }
 
-export default MTGCard;
+export type { MTGCard as default };

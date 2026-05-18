@@ -3,4 +3,4 @@ interface StoreState {
   selected: boolean;
 }
 
-export default StoreState;
+export type { StoreState as default };

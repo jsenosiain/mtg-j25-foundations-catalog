@@ -1,26 +1,30 @@
 import type MTGCard from "@/types/MTGCard";
+import type MTGDeck from "@/types/MTGDeck";
 import cards from '@/store/data/j25-all-cards.json';
 import decks from '@/store/data/j25-all-decks.json';
 
-const load = (name: string): MTGCard => {
-  return cards.find((card) => card.name === name);
+const cardList = cards as unknown as MTGCard[];
+
+const load = (name: string): MTGCard | undefined => {
+  return cardList.find((card) => card.name === name);
 };
 
+const resolve = (names: string[] | undefined): MTGCard[] =>
+  (names ?? [])
+    .map(load)
+    .filter((card): card is MTGCard => card !== undefined);
+
 const getDeckList = (): MTGDeck[] => {
-	 return decks.map((deck) => {
-    const { artifacts = [], creatures, enchantments, instants, lands, planeswalkers, sorceries } = deck;
-    
-    return {
-      ...deck,
-      artifacts: artifacts.map(load),
-      creatures: creatures.map(load),
-      enchantments: enchantments?.map(load) ?? [],
-      instants: instants?.map(load) ?? [],
-      lands: lands?.map(load) ?? [],
-      planeswalkers: planeswalkers?.map(load) ?? [],
-      sorceries: sorceries?.map(load) ?? [],
-    };
-  });
+  return decks.map((deck) => ({
+    ...deck,
+    artifacts: resolve(deck.artifacts),
+    creatures: resolve(deck.creatures),
+    enchantments: resolve(deck.enchantments),
+    instants: resolve(deck.instants),
+    lands: resolve(deck.lands),
+    planeswalkers: resolve(deck.planeswalkers),
+    sorceries: resolve(deck.sorceries),
+  })) as MTGDeck[];
 };
 
 export default getDeckList;

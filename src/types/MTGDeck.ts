@@ -14,4 +14,4 @@ interface MTGDeck {
 	sorceries?: MTGCard[];
 }
 
-export default MTGDeck;
+export type { MTGDeck as default };
