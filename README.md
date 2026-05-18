@@ -11,7 +11,7 @@ A small browser for the **Magic: The Gathering — Foundations Jumpstart (J25)**
 The deck browser is the surface; the interesting bits underneath are the proofs-of-concept:
 
 - **Pluggable persistence behind a single interface.** The "which decks have I saved" data hides behind a `DeckStore` interface ([src/store/types/DeckStore.ts](src/store/types/DeckStore.ts)) with two interchangeable implementations: a Supabase-backed store and a `localStorage`-backed store. Swapping backends is a one-line change in [src/store/store.ts](src/store/store.ts).
-- **Supabase magic-link auth + row-level security.** Email-only OTP sign-in via Supabase, with `saved_decks` rows scoped to `auth.uid()` by RLS. See [SUPABASE_SETUP.md](SUPABASE_SETUP.md) for the full server setup.
+- **Supabase email/password auth + row-level security.** Email + password sign-in via Supabase (switched from magic links to dodge the free-tier email rate limit), with `saved_decks` rows scoped to `auth.uid()` by RLS. See [SUPABASE_SETUP.md](SUPABASE_SETUP.md) for the full server setup.
 - **Optimistic UI with rollback.** [src/store/useSavedDecks.ts](src/store/useSavedDecks.ts) updates local state before awaiting the backend and reverts on failure — a small but useful pattern to keep isolated in one hook.
 - **Static-JSON join at render time.** Decks reference cards by name; [src/utilities/getDeckList.ts](src/utilities/getDeckList.ts) hydrates each deck against the cards JSON on the fly. No build step, no DB seed — just an experiment in how far raw JSON can take you.
 - **Deployed to GitHub Pages from a Vite + React app.** Subpath-aware build, GitHub Actions workflow, and Supabase redirect-URL allowlist all wired up end-to-end.

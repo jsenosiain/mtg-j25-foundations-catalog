@@ -45,18 +45,20 @@ create policy "users delete their own saved decks"
 
 RLS policies make sure every user only sees and writes their own saved decks, even though everyone uses the same public anon key.
 
-## 3. Configure the magic-link redirect
+## 3. Configure email/password auth
 
-In the dashboard go to **Authentication → URL Configuration** and add your dev URL (e.g. `http://localhost:5173`) to:
+This project uses **email + password** sign-in (not magic links), to avoid the email rate limit on Supabase's free tier.
 
-- **Site URL**
-- **Redirect URLs** (allow list)
+In the dashboard go to **Authentication → Providers → Email** and make sure:
 
-Without this, the magic link will reject the redirect.
+- **Enable Email provider** is **on**
+- **Confirm email** is **off** *(turn this off if you want sign-ups to work without sending any email — otherwise Supabase sends a confirmation link and that's still subject to the same rate limit)*
+
+With "Confirm email" off, calling `supabase.auth.signUp({ email, password })` creates the user and returns a session immediately — no email round-trip.
 
 ## 4. Sign in
 
-Run `pnpm dev`, enter your email, click the link in your inbox. You'll land back on the app signed in.
+Run `pnpm dev`, enter your email + password. First time? Use the **Sign up** link to create the account; subsequent visits use **Sign in**.
 
 ## Swapping backends
 
