@@ -1,73 +1,48 @@
-# React + TypeScript + Vite
+# MTG J25 Foundations Catalog
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A small browser for the **Magic: The Gathering — Foundations Jumpstart (J25)** pre-built decks. Pick a deck, expand it by card type, and inspect each card's mana cost and oracle text. You can also "save" decks to a personal list that persists across sessions.
 
-Currently, two official plugins are available:
+🔗 **Live demo:** https://jsenosiain.github.io/mtg-j25-foundations-catalog/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+> **Heads up:** this is a pet project. It exists to prove out a handful of ideas in a low-stakes setting, not to be a polished product. Expect rough edges, opinionated choices, and the occasional experiment that won't make it to a "real" app.
 
-## React Compiler
+## What it's actually for
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The deck browser is the surface; the interesting bits underneath are the proofs-of-concept:
 
-## Expanding the ESLint configuration
+- **Pluggable persistence behind a single interface.** The "which decks have I saved" data hides behind a `DeckStore` interface ([src/store/types/DeckStore.ts](src/store/types/DeckStore.ts)) with two interchangeable implementations: a Supabase-backed store and a `localStorage`-backed store. Swapping backends is a one-line change in [src/store/store.ts](src/store/store.ts).
+- **Supabase magic-link auth + row-level security.** Email-only OTP sign-in via Supabase, with `saved_decks` rows scoped to `auth.uid()` by RLS. See [SUPABASE_SETUP.md](SUPABASE_SETUP.md) for the full server setup.
+- **Optimistic UI with rollback.** [src/store/useSavedDecks.ts](src/store/useSavedDecks.ts) updates local state before awaiting the backend and reverts on failure — a small but useful pattern to keep isolated in one hook.
+- **Static-JSON join at render time.** Decks reference cards by name; [src/utilities/getDeckList.ts](src/utilities/getDeckList.ts) hydrates each deck against the cards JSON on the fly. No build step, no DB seed — just an experiment in how far raw JSON can take you.
+- **Deployed to GitHub Pages from a Vite + React app.** Subpath-aware build, GitHub Actions workflow, and Supabase redirect-URL allowlist all wired up end-to-end.
+- **React 19 `<Activity>`.** Used in [src/components/List.tsx](src/components/List.tsx) to hide empty category sections without unmounting them.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- React 19 + TypeScript (strict, `verbatimModuleSyntax`)
+- Vite 8
+- Tailwind CSS
+- Supabase (auth + Postgres + RLS)
+- pnpm
+- GitHub Actions → GitHub Pages
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Running locally
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+pnpm install
+cp .env.local.example .env.local   # then fill in your Supabase URL + anon key
+pnpm dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Scripts:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- `pnpm dev` — Vite dev server on http://localhost:5173
+- `pnpm build` — type-check (`tsc -b`) and build for production
+- `pnpm lint` — ESLint
+- `pnpm preview` — preview the production build
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Without `.env.local`, [src/store/supabase.ts](src/store/supabase.ts) throws at module load. Full server setup (tables, RLS, redirect allowlist) is in [SUPABASE_SETUP.md](SUPABASE_SETUP.md).
+
+## Project layout
+
+See [CLAUDE.md](CLAUDE.md) for an architecture overview — including how the static deck data is joined, how the pluggable backend works, and where the auth gate sits.
