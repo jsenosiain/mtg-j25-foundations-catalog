@@ -1,6 +1,7 @@
 import List from "./List";
 import { useSavedDecks } from "@/store";
 import type MTGDeck from "@/types/MTGDeck";
+import { BACKGROUND_COLORS } from "../contants";
 
 export interface DeckProps {
 	deck: MTGDeck;
@@ -19,12 +20,15 @@ const Deck = ({ deck }: DeckProps) => {
 	return (
 		<div className="flex-[0_0_25%] p-2" key={deck.id}>
 			<details className="border rounded-md p-4 cursor-pointer">
-				<summary className="flex justify-between gap-2">
+				<summary className="flex items-center justify-between gap-2">					
 					<div className="flex items-center gap-2">
 						<input type="checkbox" onChange={handleChange} checked={checked} value={deck.id} />
 						<span className="font-bold">{deck.name}</span>
 					</div>
-					<span className="font-bold">{deck.color}</span>
+					<span 
+						className="rounded-full w-4 h-4 bg-gray-300" 
+						style={{ backgroundColor: BACKGROUND_COLORS[deck.color as keyof typeof BACKGROUND_COLORS] }}
+					></span>
 				</summary>
 				<p>
 					<List category="Artifacts" deck={deck} />

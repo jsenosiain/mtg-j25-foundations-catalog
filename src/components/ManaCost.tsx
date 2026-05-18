@@ -19,7 +19,7 @@ const ManaCost = ({ cost }: ManaCost) => {
 	const braces = parseBraces(cost);
 
 	return (
-		<div className="flex gap-2 items-center">
+		<div className="flex gap-1 items-center">
 			{braces.map((coin, index) => {
 				if (typeof coin === "number") {
 					return <Mana type="C" key={index}>{coin}</Mana>;
