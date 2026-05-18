@@ -44,7 +44,16 @@ function App() {
 		);
 
 	const savedCount = list.filter((deck) => isSaved(deck.id)).length;
-
+	
+	const counts = {
+		white: list.filter((deck) => deck.color === "white").filter((deck) => isSaved(deck.id)).length,
+		blue: list.filter((deck) => deck.color === "blue").filter((deck) => isSaved(deck.id)).length,
+		black: list.filter((deck) => deck.color === "black").filter((deck) => isSaved(deck.id)).length,
+		red: list.filter((deck) => deck.color === "red").filter((deck) => isSaved(deck.id)).length,
+		green: list.filter((deck) => deck.color === "green").filter((deck) => isSaved(deck.id)).length,
+		multi: list.filter((deck) => deck.color === "multi").filter((deck) => isSaved(deck.id)).length,
+	};
+	
 	const visible = list
 		.filter((deck) => colorFilters.length === 0 || colorFilters.includes(deck.color))
 		.filter(
@@ -83,9 +92,9 @@ function App() {
 								key={color}
 								title={color}
 								onClick={() => toggleColor(color)}
-								className={`w-6 h-6 rounded-full border border-gray-300 ${colorFilters.includes(color) ? "ring-2 ring-offset-1 ring-gray-700" : ""}`}
+								className={`w-6 h-6 text-xs rounded-full border border-gray-300 ${colorFilters.includes(color) ? "ring-2 ring-offset-1 ring-gray-700" : ""}`}
 								style={{ backgroundColor: bg as string }}
-							/>
+							>{counts[color as keyof typeof counts]}</button>
 						))}
 					</div>
 				</div>

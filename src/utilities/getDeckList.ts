@@ -5,26 +5,22 @@ import decks from '@/store/data/j25-all-decks.json';
 
 const cardList = cards as unknown as MTGCard[];
 
-const load = (name: string): MTGCard | undefined => {
-  return cardList.find((card) => card.name === name);
-};
+const load = (name: string): MTGCard | undefined =>
+  cardList.find((card) => card.name === name);
 
-const resolve = (names: string[] | undefined): MTGCard[] =>
-  (names ?? [])
-    .map(load)
-    .filter((card): card is MTGCard => card !== undefined);
+const resolve = (names: string[] | undefined): MTGCard[] => (names ?? [])
+  .map(load)
+  .filter((card): card is MTGCard => card !== undefined);
 
-const getDeckList = (): MTGDeck[] => {
-  return decks.map((deck) => ({
-    ...deck,
-    artifacts: resolve(deck.artifacts),
-    creatures: resolve(deck.creatures),
-    enchantments: resolve(deck.enchantments),
-    instants: resolve(deck.instants),
-    lands: resolve(deck.lands),
-    planeswalkers: resolve(deck.planeswalkers),
-    sorceries: resolve(deck.sorceries),
-  })) as MTGDeck[];
-};
+const getDeckList = (): MTGDeck[] => decks.map((deck) => ({
+  ...deck,
+  artifacts: resolve(deck.artifacts),
+  creatures: resolve(deck.creatures),
+  enchantments: resolve(deck.enchantments),
+  instants: resolve(deck.instants),
+  lands: resolve(deck.lands),
+  planeswalkers: resolve(deck.planeswalkers),
+  sorceries: resolve(deck.sorceries),
+})) as MTGDeck[];
 
 export default getDeckList;

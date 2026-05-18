@@ -15,8 +15,11 @@ const SignIn = () => {
 		e.preventDefault();
 		setStatus("working");
 		setError(null);
+		
 		const action = isSignUp ? signUp : signIn;
+		
 		const { error } = await action(email, password);
+
 		if (error) {
 			setStatus("error");
 			setError(error);
