@@ -56,7 +56,7 @@ function App() {
 					Sign out
 				</button>
 			</div>
-			<div className="flex items-center gap-4 p-2 border-b">
+			<div className="flex items-center justify-between gap-4 p-2 border-b">
 				<div className="flex items-center gap-1">
 					{Object.entries(BACKGROUND_COLORS).map(([color, bg]) => (
 						<button
