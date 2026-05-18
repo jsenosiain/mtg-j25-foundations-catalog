@@ -60,42 +60,44 @@ function App() {
 
 	return (
 		<>
-			<div className="flex justify-between items-center p-2 border-b">
-				<div className="flex items-center gap-3">
-					<span className="text-sm text-gray-600">{session.user.email}</span>
+			<div className="flex justify-between items-center gap-2 p-2 border-b">
+				<div className="flex items-center gap-2 min-w-0">
+					<span className="text-sm text-gray-600 truncate min-w-0">{session.user.email}</span>
 					<SyncIndicator />
 				</div>
-				<button onClick={signOut} className="text-sm border rounded-md px-2 py-1">
+				<button onClick={signOut} className="text-sm border rounded-md px-2 py-1 shrink-0">
 					Sign out
 				</button>
 			</div>
-			<div className="flex items-center justify-between gap-4 p-2 border-b">
-				<div className="flex items-center gap-1">
-					{Object.entries(BACKGROUND_COLORS).map(([color, bg]) => (
-						<button
-							key={color}
-							title={color}
-							onClick={() => toggleColor(color)}
-							className={`w-6 h-6 rounded-full border border-gray-300 ${colorFilters.includes(color) ? "ring-2 ring-offset-1 ring-gray-700" : ""}`}
-							style={{ backgroundColor: bg as string }}
-						/>
-					))}
-				</div>
+			<div className="flex flex-col gap-2 p-2 border-b md:flex-row md:items-center md:gap-3">
 				<div className="flex items-center gap-2">
-					<span className="text-sm text-gray-500">{savedCount} / {list.length}</span>
 					<button
 						onClick={cycleSaveFilter}
-						className="text-sm border rounded-md px-2 py-1 capitalize"
+						className="text-sm border rounded-md px-2 py-1 capitalize shrink-0"
 					>
 						{saveFilter}
 					</button>
+					<div className="flex items-center gap-1">
+						{Object.entries(BACKGROUND_COLORS).map(([color, bg]) => (
+							<button
+								key={color}
+								title={color}
+								onClick={() => toggleColor(color)}
+								className={`w-6 h-6 rounded-full border border-gray-300 ${colorFilters.includes(color) ? "ring-2 ring-offset-1 ring-gray-700" : ""}`}
+								style={{ backgroundColor: bg as string }}
+							/>
+						))}
+					</div>
+				</div>
+				<div className="flex items-center gap-2 md:flex-1">
 					<input
 						type="text"
 						value={search}
 						onChange={(e) => setSearch(e.target.value)}
 						placeholder="Search by card name"
-						className="text-sm border rounded-md px-2 py-1 w-52"
+						className="text-sm border rounded-md px-2 py-1 flex-1 min-w-0"
 					/>
+					<span className="text-sm text-gray-500 shrink-0">{savedCount} / {list.length}</span>
 				</div>
 			</div>
 			<div className="flex flex-wrap">
