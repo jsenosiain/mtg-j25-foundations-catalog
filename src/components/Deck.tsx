@@ -1,14 +1,14 @@
 import List from "./List";
-import { useSavedDecks } from "@/store";
 import type MTGDeck from "@/types/MTGDeck";
 import { BACKGROUND_COLORS } from "../contants";
 
 export interface DeckProps {
 	deck: MTGDeck;
+	isSaved: (id: number) => boolean;
+	toggle: (id: number) => Promise<void>;
 }
 
-const Deck = ({ deck }: DeckProps) => {
-	const { isSaved, toggle } = useSavedDecks();
+const Deck = ({ deck, isSaved, toggle }: DeckProps) => {
 	const checked = isSaved(deck.id);
 
 	const handleChange = () => {

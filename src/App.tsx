@@ -21,7 +21,7 @@ const SAVE_FILTER_CYCLE: SaveFilter[] = ["all", "selected", "unselected"];
 
 function App() {
 	const { session, loading, signOut } = useAuth();
-	const { isSaved } = useSavedDecks();
+	const { isSaved, toggle } = useSavedDecks();
 	const list = getDeckList();
 	const [colorFilters, setColorFilters] = useState<string[]>([]);
 	const [search, setSearch] = useState("");
@@ -102,7 +102,7 @@ function App() {
 			</div>
 			<div className="flex flex-wrap">
 				{visible.map((deck) => (
-					<Deck key={deck.id} deck={deck} />
+					<Deck key={deck.id} deck={deck} isSaved={isSaved} toggle={toggle} />
 				))}
 			</div>
 		</>
