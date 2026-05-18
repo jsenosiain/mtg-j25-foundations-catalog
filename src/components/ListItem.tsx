@@ -1,5 +1,6 @@
 import type MTGCard from "@/types/MTGCard";
 import ManaCost from "./ManaCost";
+import ManaText from "./ManaText";
 
 export interface ListItemProps {
 	card: MTGCard;
@@ -15,7 +16,7 @@ const ListItem = ({ card }: ListItemProps) => {
 				</summary>
 				<section className="flex-1 flex flex-col justify-end gap-2 text-sm text-gray-500 p-4">
 					{card.oracle_text?.split("\n").map((line, index) => (
-						<span key={index}>{line}</span>
+						<ManaText key={index} text={line} />
 					))}
 				</section>
 			</details>

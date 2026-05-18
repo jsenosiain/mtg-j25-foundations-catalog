@@ -21,13 +21,13 @@ const List = ({ category, deck }: ListProps) => {
 				<summary className="flex gap-2 cursor-pointer">
 					<span className="font-bold">{category}</span>
 				</summary>
-				<p>
+				<section>
 					<ul className="">
 						{cards.map((card, index) => (
 							<ListItem key={`${card.id}${index}`} card={card} />
 						))}
 					</ul>
-				</p>
+				</section>
 			</details>
 		</Activity>
 	);

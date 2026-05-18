@@ -3,5 +3,7 @@ export { default as List } from "./List";
 export { default as ListItem } from "./ListItem";
 export { default as Mana } from "./Mana";
 export { default as ManaCost } from "./ManaCost";
+export { default as ManaSymbol } from "./ManaSymbol";
+export { default as ManaText } from "./ManaText";
 export { default as SignIn } from "./SignIn";
 export { default as SyncIndicator } from "./SyncIndicator";

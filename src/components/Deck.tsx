@@ -30,7 +30,7 @@ const Deck = ({ deck }: DeckProps) => {
 						style={{ backgroundColor: BACKGROUND_COLORS[deck.color as keyof typeof BACKGROUND_COLORS] }}
 					></span>
 				</summary>
-				<p>
+				<section>
 					<List category="Artifacts" deck={deck} />
 					<List category="Planeswalkers" deck={deck} />
 					<List category="Creatures" deck={deck} />
@@ -38,7 +38,7 @@ const Deck = ({ deck }: DeckProps) => {
 					<List category="Instants" deck={deck} />
 					<List category="Sorceries" deck={deck} />
 					<List category="Lands" deck={deck} />
-				</p>
+				</section>
 			</details>
 		</div>
 	);
