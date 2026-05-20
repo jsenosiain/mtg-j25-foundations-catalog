@@ -1,2 +1,2 @@
-export { getCards, type Card } from "./getCards";
-export { getDecks, type Deck } from "./getDecks";
+export { getCards } from "./getCards";
+export { getDecks } from "./getDecks";

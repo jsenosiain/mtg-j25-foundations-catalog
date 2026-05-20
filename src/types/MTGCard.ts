@@ -1,10 +1,10 @@
 interface MTGCard {
   artist?: string;
   cmc?: number;
-  collector_number: string;
+  collector_number?: string;
   color_identity?: string[];
   colors?: string[];
-  created_at: string;
+  created_at?: string;
   id: string;
   image_uris?: {
     small?: string;
@@ -21,13 +21,13 @@ interface MTGCard {
   oracle_text?: string;
   power?: string;
   prices?: Record<string, string>;
-  rarity: string;
-  scryfall_id: string;
-  set_code: string;
-  set_name: string;
+  rarity?: string;
+  scryfall_id?: string;
+  set_code?: string;
+  set_name?: string;
   toughness?: string;
-  type_line: string;  
-  updated_at: string;
+  type_line?: string;  
+  updated_at?: string;
 }
 
 export type { MTGCard as default };

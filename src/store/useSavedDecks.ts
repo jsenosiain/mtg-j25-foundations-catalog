@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import Store from "./store";
-import { useAuth } from "./auth";
+import useAuth from "./useAuth";
 
 const EMPTY_SET = new Set<number>();
 

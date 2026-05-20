@@ -1,5 +1,5 @@
 import List from "./List";
-import type MTGDeck from "@/types/MTGDeck";
+import type { MTGDeck } from "@/types";
 import { BACKGROUND_COLORS } from "../contants";
 
 export interface DeckProps {

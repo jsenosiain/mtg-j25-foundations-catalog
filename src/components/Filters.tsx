@@ -1,6 +1,7 @@
 import { use, useState } from "react";
 import { Deck } from "@/components";
 import { useSavedDecks } from "@/store";
+import type { MTGDeck } from "@/types";
 import ColorFilter from "./ColorFilter";
 import SearchFilter from "./SearchFilter";
 import SelectedFilter from "./SelectedFilter";
@@ -10,8 +11,7 @@ import { colorFilter, searchFilter, selectedFilter } from "@/utilities/filters";
 import useColorToggle from "../hooks/useColorToggle";
 import useSelectedFilter from "../hooks/useSelectedFilter";
 
-interface FiltersProps {
-	list: MTGDeck[];
+interface FiltersProps {	
 	decksPromise: Promise<MTGDeck[]>;
 }
 

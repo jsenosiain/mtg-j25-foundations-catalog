@@ -1,3 +1,4 @@
+import type { MTGDeck } from "@/types";
 import { BACKGROUND_COLORS } from "../contants";
 
 interface ColorFilterProps {
