@@ -3,17 +3,13 @@ import type { MTGDeck } from "@/types";
 
 export interface DeckProps {
 	deck: MTGDeck;
-	isSaved: (id: number) => boolean;
-	toggle: (id: number) => Promise<void>;
+	isChecked: boolean;
+	onCheck: (id: number) => void;
 }
 
-const Deck = ({ deck, isSaved, toggle }: DeckProps) => {
-	const checked = isSaved(deck.id);
-
-	const handleChange = () => {
-		toggle(deck.id).catch((err: unknown) => {
-			console.error("Failed to toggle deck", err);
-		});
+const Deck = ({ deck, isChecked, onCheck }: DeckProps) => {
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		onCheck(parseInt(e.target.value, 10));
 	};
 
 	return (
@@ -21,7 +17,7 @@ const Deck = ({ deck, isSaved, toggle }: DeckProps) => {
 			<details className="border rounded-md p-4 cursor-pointer">
 				<summary className="flex items-center justify-between gap-2">					
 					<div className="flex items-center gap-2">
-						<input type="checkbox" onChange={handleChange} checked={checked} value={deck.id} />
+						<input type="checkbox" onChange={handleChange} checked={isChecked} value={deck.id} />
 						<span className="font-bold">{deck.name}</span>
 					</div>
 					<span 

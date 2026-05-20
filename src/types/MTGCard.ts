@@ -14,6 +14,7 @@ interface MTGCard {
     art_crop?: string;
     border_crop?: string;
   };
+  iteration?: number;
   keywords?: string[];
   legalities?: Record<string, string>;
   mana_cost?: string;

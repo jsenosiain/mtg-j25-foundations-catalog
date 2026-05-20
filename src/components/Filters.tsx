@@ -43,7 +43,7 @@ const Filters = ({ decksPromise }: FiltersProps) => {
 			</div>
 			<div className="flex flex-wrap">
 				{visible.map((deck) => (
-					<Deck key={deck.id} deck={deck} isSaved={isSaved} toggle={toggle} />
+					<Deck key={deck.id} deck={deck} isChecked={isSaved(deck.id)} onCheck={toggle} />
 				))}
 			</div>
 		</>

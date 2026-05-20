@@ -14,6 +14,8 @@ const List = ({ category, deck }: ListProps) => {
 	const key = category.toLowerCase() as DeckCategory;
 	const cards: MTGCard[] = deck?.[key] ?? [];
 
+	console.log("cards", cards);
+	
 	return (
 		<Activity mode={cards.length === 0 ? "hidden" : "visible"}>
 			<details className="list" open>

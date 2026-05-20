@@ -5,26 +5,34 @@ import getCards from "./getCards";
 const getDecks = async (): Promise<MTGDeck[]> => {
 	const cards: MTGCard[] = await getCards();
 
-	const lookup = (name: string) => cards.find((card) => card.name.toLowerCase() === name.toLowerCase());
+	const nameToCard = (name: string) => {
+    return {
+      ...cards.find((card) => card.name.toLowerCase() === name.toLowerCase()) as MTGCard,
+      iteration: 0,
+    };
+  };
 
 	return decks.map((deck) => {
-    const artifacts     = (deck?.artifacts     ?? []).map(lookup).filter((c): c is MTGCard => c !== undefined);
-    const creatures     = (deck?.creatures     ?? []).map(lookup).filter((c): c is MTGCard => c !== undefined);
-    const enchantments  = (deck?.enchantments  ?? []).map(lookup).filter((c): c is MTGCard => c !== undefined);
-    const instants      = (deck?.instants      ?? []).map(lookup).filter((c): c is MTGCard => c !== undefined);
-    const lands         = (deck?.lands         ?? []).map(lookup).filter((c): c is MTGCard => c !== undefined);
-    const planeswalkers = (deck?.planeswalkers ?? []).map(lookup).filter((c): c is MTGCard => c !== undefined);
-    const sorceries     = (deck?.sorceries     ?? []).map(lookup).filter((c): c is MTGCard => c !== undefined);
+    const { 
+      artifacts = [], 
+      creatures = [], 
+      enchantments = [], 
+      instants = [], 
+      lands = [], 
+      planeswalkers = [], 
+      sorceries = [], 
+      ...rest 
+    } = deck;
 
     return {        
-			...deck,
-      artifacts,
-      creatures,
-      enchantments,
-      instants,
-      lands,
-      planeswalkers,
-      sorceries,
+			...rest,
+      artifacts: artifacts.map(nameToCard),
+      creatures: creatures.map(nameToCard),
+      enchantments: enchantments.map(nameToCard),
+      instants: instants.map(nameToCard),
+      lands: lands.map(nameToCard),
+      planeswalkers: planeswalkers.map(nameToCard),
+      sorceries: sorceries.map(nameToCard),
     };
   });
 };

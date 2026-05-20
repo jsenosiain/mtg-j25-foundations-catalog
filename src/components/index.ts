@@ -1,3 +1,4 @@
+export { default as Attributes } from "./Attributes";
 export { default as ColorFilter } from "./ColorFilter";
 export { default as Deck } from "./Deck";
 export { default as DeckCounter } from "./DeckCounter";
