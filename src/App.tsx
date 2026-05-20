@@ -1,74 +1,25 @@
-import { useState } from "react";
-import { Deck, SignIn, SyncIndicator } from "@/components";
-import { getDeckList } from "@/utilities";
-import { useAuth, useSavedDecks } from "@/store";
-import { BACKGROUND_COLORS } from "./contants";
-import type MTGDeck from "@/types/MTGDeck";
-import type MTGCard from "@/types/MTGCard";
+import { Suspense } from "react";
+import { SignIn, SyncIndicator } from "@/components";
+import { useAuth } from "@/store";
+import { getDecks } from "./services/mtg";
 
-const allCards = (deck: MTGDeck): MTGCard[] => [
-	...deck.creatures,
-	...(deck.artifacts ?? []),
-	...(deck.enchantments ?? []),
-	...(deck.instants ?? []),
-	...(deck.planeswalkers ?? []),
-	...(deck.sorceries ?? []),
-	...deck.lands,
-];
-
-type SaveFilter = "all" | "selected" | "unselected";
-const SAVE_FILTER_CYCLE: SaveFilter[] = ["all", "selected", "unselected"];
+import Filters from "./components/Filters";
 
 function App() {
-	const { session, loading, signOut } = useAuth();
-	const { isSaved, toggle } = useSavedDecks();
-	const list = getDeckList();
-	const [colorFilters, setColorFilters] = useState<string[]>([]);
-	const [search, setSearch] = useState("");
-	const [saveFilter, setSaveFilter] = useState<SaveFilter>("all");
-
-	const cycleSaveFilter = () =>
-		setSaveFilter((prev) => SAVE_FILTER_CYCLE[(SAVE_FILTER_CYCLE.indexOf(prev) + 1) % SAVE_FILTER_CYCLE.length]);
-
+	const { session, loading, signOut } = useAuth();	
+	
 	if (loading) {
 		return <div className="p-4">Loading…</div>;
 	}
 
 	if (!session) {
 		return <SignIn />;
-	}
+	}	
 
-	const toggleColor = (color: string) =>
-		setColorFilters((prev) =>
-			prev.includes(color) ? prev.filter((c) => c !== color) : [...prev, color]
-		);
-
-	const savedCount = list.filter((deck) => isSaved(deck.id)).length;
-	
-	const counts = {
-		white: list.filter((deck) => deck.color === "white").filter((deck) => isSaved(deck.id)).length,
-		blue: list.filter((deck) => deck.color === "blue").filter((deck) => isSaved(deck.id)).length,
-		black: list.filter((deck) => deck.color === "black").filter((deck) => isSaved(deck.id)).length,
-		red: list.filter((deck) => deck.color === "red").filter((deck) => isSaved(deck.id)).length,
-		green: list.filter((deck) => deck.color === "green").filter((deck) => isSaved(deck.id)).length,
-		multi: list.filter((deck) => deck.color === "multi").filter((deck) => isSaved(deck.id)).length,
-	};
-	
-	const visible = list
-		.filter((deck) => colorFilters.length === 0 || colorFilters.includes(deck.color))
-		.filter(
-			(deck) =>
-				!search.trim() ||
-				allCards(deck).some((c) =>
-					c.name.toLowerCase().includes(search.trim().toLowerCase())
-				)
-		)
-		.filter((deck) =>
-			saveFilter === "all" ? true : saveFilter === "selected" ? isSaved(deck.id) : !isSaved(deck.id)
-		);
+	const decksPromise = getDecks();
 
 	return (
-		<>
+		<>			
 			<div className="flex justify-between items-center gap-2 p-2 border-b">
 				<div className="flex items-center gap-2 min-w-0">
 					<span className="text-sm text-gray-600 truncate min-w-0">{session.user.email}</span>
@@ -78,42 +29,10 @@ function App() {
 					Sign out
 				</button>
 			</div>
-			<div className="flex flex-col gap-2 p-2 border-b md:flex-row md:items-center md:gap-3">
-				<div className="flex items-center gap-2">
-					<button
-						onClick={cycleSaveFilter}
-						className="text-sm border rounded-md px-2 py-1 capitalize shrink-0"
-					>
-						{saveFilter}
-					</button>
-					<div className="flex items-center gap-1">
-						{Object.entries(BACKGROUND_COLORS).map(([color, bg]) => (
-							<button
-								key={color}
-								title={color}
-								onClick={() => toggleColor(color)}
-								className={`w-6 h-6 text-xs rounded-full border border-gray-300 ${colorFilters.includes(color) ? "ring-2 ring-offset-1 ring-gray-700" : ""}`}
-								style={{ backgroundColor: bg as string }}
-							>{counts[color as keyof typeof counts]}</button>
-						))}
-					</div>
-				</div>
-				<div className="flex items-center gap-2 md:flex-1">
-					<input
-						type="text"
-						value={search}
-						onChange={(e) => setSearch(e.target.value)}
-						placeholder="Search by card name"
-						className="text-sm border rounded-md px-2 py-1 flex-1 min-w-0"
-					/>
-					<span className="text-sm text-gray-500 shrink-0">{savedCount} / {list.length}</span>
-				</div>
-			</div>
-			<div className="flex flex-wrap">
-				{visible.map((deck) => (
-					<Deck key={deck.id} deck={deck} isSaved={isSaved} toggle={toggle} />
-				))}
-			</div>
+
+			<Suspense fallback={<div className="p-4">Loading decks…</div>}>
+				<Filters decksPromise={decksPromise} />	
+			</Suspense>
 		</>
 	);
 }

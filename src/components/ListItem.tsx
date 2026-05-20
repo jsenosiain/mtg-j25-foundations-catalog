@@ -12,7 +12,7 @@ export interface ListItemProps {
 }
 
 const Attributes = ({ card }: { card: MTGCard }) => {
-	if (!card.power || !card.toughness) {
+	if (!card?.power || !card?.toughness) {
 		return null;
 	}
 
@@ -27,24 +27,24 @@ const ListItem = ({ card }: ListItemProps) => {
 			<details className="w-full">
 				<summary className="flex justify-between gap-2">
 					<div className="flex flex-col gap-1">
-						<span className="truncate min-w-0">{card.name}</span>
-						<span className="truncate min-w-0 text-xs">{card.type_line}</span>
+						<span className="truncate min-w-0">{card?.name}</span>
+						<span className="truncate min-w-0 text-xs">{card?.type_line}</span>
 					</div>
 					<div className="flex flex-col gap-1 h-full items-end">
-						<ManaCost cost={card.mana_cost ?? ""} />						
+						<ManaCost cost={card?.mana_cost ?? ""} />						
 						<Attributes card={card} />
 					</div>
 				</summary>
 				<section className="flex flex-col gap-0 text-gray-400 px-2 py-2">
 					{/*
-					<img src={card.image_uris?.art_crop} alt={card.name} />
-					<span className="truncate min-w-0 text-xs text-gray-400">{card.artist}</span>
+					<img src={card.image_uris?.art_crop} alt={card?.name} />
+					<span className="truncate min-w-0 text-xs text-gray-400">{card?.artist}</span>
 					*/}
-					<span className="text-xs">{card.rarity}</span>
+					<span className="text-xs">{card?.rarity}</span>
 					<OracleText card={card} />
 					<div className="flex flex-row justify-between text-xs">
-						<div>{card.collector_number}</div>
-						<div>{usdFormatter.format(Number(card.prices?.usd ?? 0))}</div>
+						<div>{card?.collector_number}</div>
+						<div>{usdFormatter.format(Number(card?.prices?.usd ?? 0))}</div>
 					</div>
 				</section>
 			</details>

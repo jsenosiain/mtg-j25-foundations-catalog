@@ -24,7 +24,7 @@ const List = ({ category, deck }: ListProps) => {
 				<section>
 					<ul className="">
 						{cards.map((card, index) => (
-							<ListItem key={`${card.id}${index}`} card={card} />
+							<ListItem key={`${card?.id}${index}`} card={card} />
 						))}
 					</ul>
 				</section>
