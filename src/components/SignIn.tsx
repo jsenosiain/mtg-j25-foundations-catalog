@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { useAuth } from "@/store";
+import { useAuth } from "@/hooks";
 
 const SignIn = () => {
 	const { signIn, signUp } = useAuth();

@@ -1,5 +1,6 @@
 import type { MTGDeck } from "@/types";
-import { BACKGROUND_COLORS } from "../contants";
+
+const COLOR_ORDER = ["white", "blue", "black", "red", "green", "multi"];
 
 interface ColorFilterProps {
 	colorFilters: string[];
@@ -8,10 +9,11 @@ interface ColorFilterProps {
 }
 
 const ColorFilter = ({ colorFilters, savedList, toggleColor }: ColorFilterProps) => {
+	const initialCounts = { black: 0, blue: 0, green: 0, multi: 0, red: 0, white: 0 };
 	const savedCounts = savedList.reduce((acc, deck) => ({
 		...acc,
 		[deck.color]: (acc[deck.color as keyof typeof acc] || 0) + 1,
-	}), { black: 0, blue: 0, green: 0, multi: 0, red: 0, white: 0 });	
+	}), initialCounts);	
 
 	const handleToggleColor = (color: string) => () => {
 		toggleColor(color);
@@ -19,13 +21,13 @@ const ColorFilter = ({ colorFilters, savedList, toggleColor }: ColorFilterProps)
 
 	return (
 		<div className="flex items-center gap-1">
-			{Object.entries(BACKGROUND_COLORS).map(([color, bg]) => (
+			{COLOR_ORDER.map((color) => (
 				<button
 					key={color}
 					title={color}
 					onClick={handleToggleColor(color)}
 					className={`w-6 h-6 text-xs rounded-full border border-gray-300 ${colorFilters.includes(color) ? "ring-2 ring-offset-1 ring-gray-700" : ""}`}
-					style={{ backgroundColor: bg as string }}
+					style={{ backgroundColor: `var(--deck-${color})` }}
 				>{savedCounts[color as keyof typeof savedCounts]}</button>
 			))}
 		</div>

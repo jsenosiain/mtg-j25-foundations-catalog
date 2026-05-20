@@ -1,6 +1,5 @@
 import List from "./List";
 import type { MTGDeck } from "@/types";
-import { BACKGROUND_COLORS } from "../contants";
 
 export interface DeckProps {
 	deck: MTGDeck;
@@ -27,7 +26,7 @@ const Deck = ({ deck, isSaved, toggle }: DeckProps) => {
 					</div>
 					<span 
 						className="rounded-full w-4 h-4 bg-gray-300" 
-						style={{ backgroundColor: BACKGROUND_COLORS[deck.color as keyof typeof BACKGROUND_COLORS] }}
+						style={{ backgroundColor: `var(--deck-${deck.color})` }}
 					></span>
 				</summary>
 				<section>

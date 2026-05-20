@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import Store from "./store";
-import useAuth from "./useAuth";
+import { Store } from "@/store";
+import { useAuth } from "@/hooks";
 
 const EMPTY_SET = new Set<number>();
 
-export const useSavedDecks = () => {
+const useSavedDecks = () => {
 	const { session } = useAuth();
 	// null = not yet fetched (loading); Set = fetched (possibly empty)
 	const [savedIds, setSavedIds] = useState<Set<number> | null>(null);
@@ -48,3 +48,5 @@ export const useSavedDecks = () => {
 
 	return { isSaved, toggle, loading: savedIds === null };
 };
+
+export default useSavedDecks;

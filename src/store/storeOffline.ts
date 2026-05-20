@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from "react";
 import { supabase } from "./supabase";
-import type { DeckStore } from "./types/DeckStore";
+import type { Store } from "@/types";
 
 const TABLE = "saved_decks";
 const LOCAL_KEY = "decks_offline";
@@ -150,23 +150,23 @@ if (typeof window !== "undefined") {
 	});
 }
 
-const StoreOffline: DeckStore = {
+const StoreOffline: Store = {
 	list: async () => {
 		await sync().catch(() => {});
 		return savedIds(readLocal());
 	},
 
-	add: async (deckId) => {
+	add: async (id) => {
 		const state = readLocal();
-		state[deckId] = { saved: true, updatedAt: Date.now(), synced: false };
+		state[id] = { saved: true, updatedAt: Date.now(), synced: false };
 		writeLocal(state);
 		setStatus({ pending: countPending(state) });
 		sync().catch(() => {});
 	},
 
-	remove: async (deckId) => {
+	remove: async (id) => {
 		const state = readLocal();
-		state[deckId] = { saved: false, updatedAt: Date.now(), synced: false };
+		state[id] = { saved: false, updatedAt: Date.now(), synced: false };
 		writeLocal(state);
 		setStatus({ pending: countPending(state) });
 		sync().catch(() => {});

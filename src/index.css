@@ -1,2 +1,10 @@
 @import "tailwindcss";
 
+:root {
+	--deck-white: rgb(248, 231, 185);
+	--deck-blue: rgb(179, 206, 234);
+	--deck-black: rgb(166, 159, 157);
+	--deck-red: rgb(235, 159, 130);
+	--deck-green: rgb(196, 211, 202);
+	--deck-multi: #rgb(229, 207, 133);
+}

@@ -1,16 +1,18 @@
 import type { MTGCard } from "@/types";
-import { sleep } from "./sleep";
+import { sleep } from "@/utilities";
 
-const BASE_URL = "https://api.scryfall.com/cards/search?q=set:j25&unique=prints&include_variations=true&format=json&order=set";
-const CARDS_CACHE_KEY = 'scryfall_j25_cards';
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+const BASE_URL = import.meta.env.VITE_SCRYFALL_API_URL;
+const CARDS_CACHE_KEY = import.meta.env.VITE_CACHE_CARDS_KEY;
+const CACHE_TTL_MS = parseInt(import.meta.env.VITE_CACHE_TTL_MS, 10);
 
 const getCards = async (): Promise<MTGCard[]> => {
 	const cached = localStorage.getItem(CARDS_CACHE_KEY);
   
 	if (cached) {
 		const { timestamp, cards } = JSON.parse(cached) as { timestamp: number; cards: MTGCard[] };
+    
 		if (Date.now() - timestamp < CACHE_TTL_MS) {
+      console.log("Using cached card data");
 			return cards;
 		}
 	}
@@ -75,4 +77,4 @@ const getCards = async (): Promise<MTGCard[]> => {
 	return cards;
 }
 	
-export { getCards };
+export default getCards;

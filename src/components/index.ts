@@ -1,4 +1,6 @@
+export { default as ColorFilter } from "./ColorFilter";
 export { default as Deck } from "./Deck";
+export { default as DeckCounter } from "./DeckCounter";
 export { default as List } from "./List";
 export { default as ListItem } from "./ListItem";
 export { default as Mana } from "./Mana";

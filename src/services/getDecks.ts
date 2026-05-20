@@ -1,6 +1,6 @@
 import type { MTGCard, MTGDeck } from "@/types";
-import { getCards } from "./getCards";
-import decks from "./j25-all-decks.json";
+import decks from "@/json/j25-all-decks.json";
+import getCards from "./getCards";
 
 const getDecks = async (): Promise<MTGDeck[]> => {
 	const cards: MTGCard[] = await getCards();
@@ -29,4 +29,4 @@ const getDecks = async (): Promise<MTGDeck[]> => {
   });
 };
 
-export { getDecks };
+export default getDecks;

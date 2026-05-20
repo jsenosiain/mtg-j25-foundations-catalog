@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { SignIn, SyncIndicator } from "@/components";
-import { useAuth } from "@/store";
-import { getDecks } from "./services/mtg";
+import { useAuth } from "@/hooks";
+import { getDecks } from "./services";
 
 import Filters from "./components/Filters";
 

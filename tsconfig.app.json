@@ -25,6 +25,12 @@
     "paths": {
       "@/components": ["./src/components/index.ts"],
       "@/components/*": ["./src/components/*"],
+      "@/hooks": ["./src/hooks/index.ts"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/json": ["./src/json/index.ts"],
+      "@/json/*": ["./src/json/*"],
+      "@/providers": ["./src/providers/index.ts"],
+      "@/providers/*": ["./src/providers/*"],
       "@/store": ["./src/store/index.ts"],
       "@/store/*": ["./src/store/*"],
       "@/types": ["./src/types/index.ts"],

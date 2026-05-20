@@ -1,6 +1,6 @@
 import { use, useState } from "react";
 import { Deck } from "@/components";
-import { useSavedDecks } from "@/store";
+import { useSavedDecks } from "@/hooks";
 import type { MTGDeck } from "@/types";
 import ColorFilter from "./ColorFilter";
 import SearchFilter from "./SearchFilter";
@@ -17,8 +17,6 @@ interface FiltersProps {
 
 const Filters = ({ decksPromise }: FiltersProps) => {			
 	const list = use(decksPromise); 
-
-	console.log("decks from promise", list);
 
 	const { isSaved, toggle } = useSavedDecks();	
 	const [search, setSearch] = useState("");	
