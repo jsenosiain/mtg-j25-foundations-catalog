@@ -36,11 +36,7 @@ const ListItem = ({ card }: ListItemProps) => {
 					</div>
 				</summary>
 				<section className="flex flex-col gap-0 text-gray-400 px-2 py-2">
-					{/*
-					<img src={card.image_uris?.art_crop} alt={card?.name} />
-					<span className="truncate min-w-0 text-xs text-gray-400">{card?.artist}</span>
-					*/}
-					<span className="text-xs">{card?.rarity}</span>
+	<span className="text-xs">{card?.rarity}</span>
 					<OracleText card={card} />
 					<div className="flex flex-row justify-between text-xs">
 						<div>{card?.collector_number}</div>

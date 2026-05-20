@@ -4,7 +4,6 @@ import { BACKGROUND_COLORS } from "../contants";
 
 interface ManaProps {
 	children?: ReactNode;
-	text?: string;
 	type?: string;
 }
 
