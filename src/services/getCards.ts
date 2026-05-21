@@ -8,6 +8,8 @@ const CACHE_TTL_MS = parseInt(import.meta.env.VITE_CACHE_TTL_MS, 10);
 const getCards = async (): Promise<MTGCard[]> => {
 	const cached = localStorage.getItem(CARDS_CACHE_KEY);
   
+  console.log("cached", cached);
+
 	if (cached) {
 		const { timestamp, cards } = JSON.parse(cached) as { timestamp: number; cards: MTGCard[] };
     
@@ -36,6 +38,8 @@ const getCards = async (): Promise<MTGCard[]> => {
 		}
 	}	
 	
+  console.log("allCards", allCards);
+  
 	const cards = allCards.map((card) => {
     const {
       artist,
