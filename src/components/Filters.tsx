@@ -1,3 +1,4 @@
+import { use } from "react";
 import type { MTGDeck } from "@/types";
 import ColorFilter from "./ColorFilter";
 import SearchFilter from "./SearchFilter";
@@ -6,7 +7,7 @@ import DeckCounter from "./DeckCounter";
 
 interface FiltersProps {	
 	colorFilters: string[];
-	list: MTGDeck[];
+	decksPromise: Promise<MTGDeck[]>;
 	search: string;
 	selected: string;
 	onColors: (color: string) => void;
@@ -14,7 +15,9 @@ interface FiltersProps {
 	onSelected: () => void;
 }
 
-const Filters = ({ colorFilters, list, search, selected, onColors, onSearch, onSelected }: FiltersProps) => {			
+const Filters = ({ colorFilters, decksPromise, search, selected, onColors, onSearch, onSelected }: FiltersProps) => {			
+	const list = use(decksPromise); 
+
 	return (		
 		<div className="flex flex-col gap-2 p-2 border-b md:flex-row md:items-center md:gap-3">
 			<div className="flex items-center gap-2">

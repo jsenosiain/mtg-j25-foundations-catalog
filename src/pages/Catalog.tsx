@@ -1,31 +1,30 @@
-import { use, useState, Suspense } from "react";
-import type { MTGDeck } from "@/types";
+import { useState, Suspense } from "react";
 import { useColorToggle, useSelectedFilter } from "@/hooks";
 import { Decks, Filters } from "@/components";
 
-interface CatalogProps {	
-	decksPromise: Promise<MTGDeck[]>;
-}
+import { getDecks } from "../services";
 
-const Catalog = ({ decksPromise }: CatalogProps) => {			
-	const list = use(decksPromise); 
-
+const Catalog = () => {	
 	const [search, setSearch] = useState<string>("");	
 	const [colors, toggleColors] = useColorToggle();
 	const [selected, cycleSelected] = useSelectedFilter();	
 
+	const decksPromise = getDecks();
+
 	return (
 		<>
-			<Filters 
-				list={list} 
-				colorFilters={colors}
-				search={search} 
-				selected={selected}
-				onColors={toggleColors}
-				onSearch={setSearch} 
-				onSelected={cycleSelected}
-			/>
-			<Suspense fallback={<div className="p-4">Loading decks…</div>}>
+			<Suspense fallback={<div className="p-4">Loading filters...</div>}>				
+				<Filters 
+					decksPromise={decksPromise} 
+					colorFilters={colors}
+					search={search} 
+					selected={selected}
+					onColors={toggleColors}
+					onSearch={setSearch} 
+					onSelected={cycleSelected}
+				/>
+			</Suspense>
+			<Suspense fallback={<div className="p-4">Loading decks...</div>}>
 				<Decks 
 					decksPromise={decksPromise} 
 					colorFilters={colors}

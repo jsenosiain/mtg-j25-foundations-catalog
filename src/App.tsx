@@ -1,8 +1,6 @@
-import { Suspense } from "react";
 import { SignIn, SyncIndicator } from "@/components";
 import { useAuth } from "@/hooks";
 import Catalog from "@/pages/Catalog";
-import { getDecks } from "./services";
 
 function App() {
 	const { session, loading, signOut } = useAuth();	
@@ -15,8 +13,6 @@ function App() {
 		return <SignIn />;
 	}	
 
-	const decksPromise = getDecks();
-
 	return (
 		<>			
 			<div className="flex justify-between items-center gap-2 p-2 border-b">
@@ -27,11 +23,8 @@ function App() {
 				<button onClick={signOut} className="text-sm border rounded-md px-2 py-1 shrink-0">
 					Sign out
 				</button>
-			</div>
-
-			<Suspense fallback={<div className="p-4">Loading decks…</div>}>
-				<Catalog decksPromise={decksPromise} />	
-			</Suspense>
+			</div>			
+			<Catalog />	
 		</>
 	);
 }
