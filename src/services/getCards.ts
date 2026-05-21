@@ -21,6 +21,8 @@ const getCards = async (): Promise<MTGCard[]> => {
 
 	let nextUrl = BASE_URL;
 	
+  console.log("nextUrl", nextUrl);
+  
 	while (nextUrl) {		
 		const response = await fetch(nextUrl, { headers: { "User-Agent": "ScryfallFetcher/1.0" } });		
 		const data = await response.json();
