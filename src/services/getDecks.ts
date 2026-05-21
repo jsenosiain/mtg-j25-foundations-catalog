@@ -12,6 +12,9 @@ const getDecks = async (): Promise<MTGDeck[]> => {
     };
   };
 
+  //console.log("%cGET CARDS!", "color: red; font-weight: bold;");
+  //console.log("decks", decks);
+
 	return decks.map((deck) => {
     const { 
       artifacts = [], 
@@ -24,7 +27,7 @@ const getDecks = async (): Promise<MTGDeck[]> => {
       ...rest 
     } = deck;
 
-    return {        
+    const results = {        
 			...rest,
       artifacts: artifacts.map(nameToCard),
       creatures: creatures.map(nameToCard),
@@ -34,6 +37,11 @@ const getDecks = async (): Promise<MTGDeck[]> => {
       planeswalkers: planeswalkers.map(nameToCard),
       sorceries: sorceries.map(nameToCard),
     };
+
+    console.log("%cGET DECKS!", "color: red; font-weight: bold;");
+    console.log("results", results);
+
+    return results;
   });
 };
 
