@@ -5,14 +5,16 @@ import getCards from "./getCards";
 const getDecks = async (): Promise<MTGDeck[]> => {
 	const cards: MTGCard[] = await getCards();
 
+  console.log("cards", cards);
+
 	const nameToCard = (name: string) => {
+    console.log("nameToCard", name);
     return {
       ...(cards.find((card) => card.name.toLowerCase() === name.toLowerCase()) as MTGCard),
       iteration: 0,
     };
   };
-
-  console.log("nameToCard", nameToCard)
+  
   //console.log("%cGET CARDS!", "color: red; font-weight: bold;");
   //console.log("decks", decks);
 
@@ -39,8 +41,8 @@ const getDecks = async (): Promise<MTGDeck[]> => {
       sorceries: sorceries.map(nameToCard),
     };
 
-    console.log("%cGET DECKS!", "color: red; font-weight: bold;");
-    console.log("results", results);
+    //console.log("%cGET DECKS!", "color: red; font-weight: bold;");
+    //console.log("results", results);
 
     return results;
   });
