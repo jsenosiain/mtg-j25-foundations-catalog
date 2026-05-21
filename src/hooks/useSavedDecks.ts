@@ -6,7 +6,6 @@ const EMPTY_SET = new Set<number>();
 
 const useSavedDecks = () => {
 	const { session } = useAuth();
-	// null = not yet fetched (loading); Set = fetched (possibly empty)
 	const [savedIds, setSavedIds] = useState<Set<number> | null>(null);
 
 	useEffect(() => {

@@ -41,6 +41,7 @@ export default defineConfig({
       '@/json': path.resolve(__dirname, 'src/json'),
       '@/pages': path.resolve(__dirname, 'src/pages'),
       '@/providers': path.resolve(__dirname, 'src/providers'),
+      '@/services': path.resolve(__dirname, 'src/services'),
       '@/store': path.resolve(__dirname, 'src/store'),
       '@/types': path.resolve(__dirname, 'src/types'),
       '@/utilities': path.resolve(__dirname, 'src/utilities'),

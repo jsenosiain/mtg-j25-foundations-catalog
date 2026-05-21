@@ -1,15 +1,16 @@
-import List from "./List";
+import { useSavedDecks } from "@/hooks";
 import type { MTGDeck } from "@/types";
+import List from "./List";
 
 export interface DeckProps {
 	deck: MTGDeck;
-	isChecked: boolean;
-	onCheck: (id: number) => void;
 }
 
-const Deck = ({ deck, isChecked, onCheck }: DeckProps) => {
+const Deck = ({ deck }: DeckProps) => {
+	const { isSaved, toggle } = useSavedDecks();	
+
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		onCheck(parseInt(e.target.value, 10));
+		toggle(parseInt(e.target.value, 10));
 	};
 
 	return (
@@ -17,7 +18,7 @@ const Deck = ({ deck, isChecked, onCheck }: DeckProps) => {
 			<details className="border rounded-md p-4 cursor-pointer">
 				<summary className="flex items-center justify-between gap-2">					
 					<div className="flex items-center gap-2">
-						<input type="checkbox" onChange={handleChange} checked={isChecked} value={deck.id} />
+						<input type="checkbox" onChange={handleChange} checked={isSaved(deck.id)} value={deck.id} />
 						<span className="font-bold">{deck.name}</span>
 					</div>
 					<span 
