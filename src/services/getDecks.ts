@@ -12,7 +12,7 @@ const getDecks = async (): Promise<MTGDeck[]> => {
     };
   };
 
-  console.log("nameToCard")
+  console.log("nameToCard", nameToCard)
   //console.log("%cGET CARDS!", "color: red; font-weight: bold;");
   //console.log("decks", decks);
 
