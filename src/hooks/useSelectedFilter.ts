@@ -9,7 +9,7 @@ const useSelectedFilter = () => {
 
 	const cycleSelectedFilter = () => setSelectedFilter((prev) => SELECTED_FILTER_CYCLE[(SELECTED_FILTER_CYCLE.indexOf(prev) + 1) % SELECTED_FILTER_CYCLE.length]);
 
-	return { selectedFilterValue, cycleSelectedFilter };
+	return [selectedFilterValue, cycleSelectedFilter] as const;
 };
 
 export default useSelectedFilter;

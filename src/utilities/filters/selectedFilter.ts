@@ -1,7 +1,11 @@
 import type { MTGDeck } from "@/types";
 
-const selectedFilter = (selectedFilterValue: string, isSaved: (id: number) => boolean) => (deck: MTGDeck) => {
-	return selectedFilterValue === "all" ? true : selectedFilterValue === "selected" ? isSaved(deck.id) : !isSaved(deck.id);
+const selectedFilter = (selected: string, isSaved: (id: number) => boolean) => (deck: MTGDeck) => {	
+	return selected === "all" ? 
+		true : 
+		selected === "selected" ? 
+			isSaved(deck.id) : 
+			!isSaved(deck.id);
 };
 
 export default selectedFilter;

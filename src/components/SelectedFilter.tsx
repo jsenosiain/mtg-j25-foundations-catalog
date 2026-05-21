@@ -1,14 +1,14 @@
 interface SelectedFilterProps {
-	cycleSelectedFilter: () => void;
-	selectedFilterValue: string;
+	selected: string;
+	onSelected: () => void;
 }
 
-const SelectedFilter = ({ cycleSelectedFilter, selectedFilterValue }: SelectedFilterProps) => (	
+const SelectedFilter = ({ selected, onSelected }: SelectedFilterProps) => (	
 	<button
-		onClick={cycleSelectedFilter}
 		className="text-sm border rounded-md px-2 py-1 capitalize shrink-0"
+		onClick={onSelected}		
 	>
-		{selectedFilterValue}
+		{selected}
 	</button>		
 );
 

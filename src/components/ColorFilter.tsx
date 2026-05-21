@@ -1,14 +1,18 @@
 import type { MTGDeck } from "@/types";
+import { useSavedDecks } from "@/hooks";
 
 const COLOR_ORDER = ["white", "blue", "black", "red", "green", "multi"];
 
 interface ColorFilterProps {
+	list: MTGDeck[];
 	colorFilters: string[];
 	toggleColor: (color: string) => void;
-	savedList: MTGDeck[];
 }
 
-const ColorFilter = ({ colorFilters, savedList, toggleColor }: ColorFilterProps) => {
+const ColorFilter = ({ list, colorFilters, toggleColor }: ColorFilterProps) => {
+	const { isSaved } = useSavedDecks();
+	const savedList = list.filter((deck) => isSaved(deck.id));	
+
 	const initialCounts = { black: 0, blue: 0, green: 0, multi: 0, red: 0, white: 0 };
 	const savedCounts = savedList.reduce((acc, deck) => ({
 		...acc,

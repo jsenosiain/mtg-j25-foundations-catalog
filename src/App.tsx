@@ -1,9 +1,8 @@
 import { Suspense } from "react";
 import { SignIn, SyncIndicator } from "@/components";
 import { useAuth } from "@/hooks";
+import Catalog from "@/pages/Catalog";
 import { getDecks } from "./services";
-
-import Filters from "./components/Filters";
 
 function App() {
 	const { session, loading, signOut } = useAuth();	
@@ -31,7 +30,7 @@ function App() {
 			</div>
 
 			<Suspense fallback={<div className="p-4">Loading decks…</div>}>
-				<Filters decksPromise={decksPromise} />	
+				<Catalog decksPromise={decksPromise} />	
 			</Suspense>
 		</>
 	);

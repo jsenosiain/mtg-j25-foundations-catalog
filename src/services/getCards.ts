@@ -12,7 +12,7 @@ const getCards = async (): Promise<MTGCard[]> => {
 		const { timestamp, cards } = JSON.parse(cached) as { timestamp: number; cards: MTGCard[] };
     
 		if (Date.now() - timestamp < CACHE_TTL_MS) {
-      console.log("Using cached card data");
+      console.log("%cUsing cached card data", "color: green;");
 			return cards;
 		}
 	}
