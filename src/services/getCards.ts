@@ -7,8 +7,6 @@ const CACHE_TTL_MS = parseInt(import.meta.env.VITE_CACHE_TTL_MS, 10);
 
 const getCards = async (): Promise<MTGCard[]> => {
 	const cached = localStorage.getItem(CARDS_CACHE_KEY);
-  
-  console.log("env", import.meta.env);
 
 	if (cached) {
 		const { timestamp, cards } = JSON.parse(cached) as { timestamp: number; cards: MTGCard[] };
@@ -22,9 +20,6 @@ const getCards = async (): Promise<MTGCard[]> => {
 	const allCards = [];
 
 	let nextUrl = BASE_URL;
-	
-  console.log("BASE_URL", BASE_URL);
-  console.log("nextUrl", nextUrl);
 
 	while (nextUrl) {		
 		const response = await fetch(nextUrl, { headers: { "User-Agent": "ScryfallFetcher/1.0" } });		

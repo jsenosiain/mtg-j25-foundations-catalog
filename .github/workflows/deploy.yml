@@ -36,6 +36,9 @@ jobs:
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_CACHE_CARDS_KEY: ${{ vars.VITE_CACHE_CARDS_KEY }}
+          VITE_CACHE_TTL_MS: ${{ vars.VITE_CACHE_TTL_MS }}
+          VITE_SCRYFALL_API_URL: ${{ vars.VITE_SCRYFALL_API_URL }}
 
       - uses: actions/configure-pages@v5
 
