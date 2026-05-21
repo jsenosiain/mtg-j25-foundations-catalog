@@ -7,11 +7,12 @@ const getDecks = async (): Promise<MTGDeck[]> => {
 
 	const nameToCard = (name: string) => {
     return {
-      ...cards.find((card) => card.name.toLowerCase() === name.toLowerCase()) as MTGCard,
+      ...(cards.find((card) => card.name.toLowerCase() === name.toLowerCase()) as MTGCard),
       iteration: 0,
     };
   };
 
+  console.log("nameToCard")
   //console.log("%cGET CARDS!", "color: red; font-weight: bold;");
   //console.log("decks", decks);
 
