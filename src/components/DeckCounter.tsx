@@ -1,22 +1,16 @@
-import { use } from "react";
 import type { MTGDeck } from "@/types";
 import { useSavedDecks } from "@/hooks";
 
 interface DeckCounterProps {
-	decksPromise: Promise<MTGDeck[]>;
+	list: MTGDeck[];
 }
 
-const DeckCounter = ({ decksPromise }: DeckCounterProps) => {
-	const list = use(decksPromise); 	
-	
-	// i believe this is causing unnecessary re-draws
-	// once list resolves this component should display correctly but instead it
-	// initially displays a 0 before updating to the correct count
+const DeckCounter = ({ list }: DeckCounterProps) => {
 	const { isSaved } = useSavedDecks();
 
 	return (
 		<span className="text-sm text-gray-500 shrink-0">
-			{list.filter(({id}) => isSaved(id)).length} / {list.length}
+			{list.filter(({ id }) => isSaved(id)).length} / {list.length}
 		</span>
 	);
 };

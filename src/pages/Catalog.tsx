@@ -1,36 +1,35 @@
-import { useState, Suspense } from "react";
+import { useState } from "react";
+import type { MTGDeck } from "@/types";
 import { useColorToggle, useSelectedFilter } from "@/hooks";
-import { Decks, DecksSkeleton, Filters } from "@/components";
-import { getDecks } from "@/services";
+import { Decks, Filters } from "@/components";
+import decksJson from "@/json/j25-all-decks.json";
 
-const Catalog = () => {	
-	const decksPromise = getDecks(); //
-	
-	const [search, setSearch] = useState<string>("");	
+const decks = decksJson as MTGDeck[];
+
+const Catalog = () => {
+	const [search, setSearch] = useState<string>("");
 	const [colors, toggleColors] = useColorToggle();
-	const [selected, cycleSelected] = useSelectedFilter();		
+	const [selected, cycleSelected] = useSelectedFilter();
 
 	return (
-		<>				
-			<Filters 
-				decksPromise={decksPromise} 
+		<>
+			<Filters
+				list={decks}
 				colors={colors}
-				search={search} 
+				search={search}
 				selected={selected}
 				onColors={toggleColors}
-				onSearch={setSearch} 
+				onSearch={setSearch}
 				onSelected={cycleSelected}
 			/>
-			<Suspense fallback={<DecksSkeleton />}>
-				<Decks 
-					decksPromise={decksPromise} 
-					colors={colors}
-					search={search}
-					selected={selected}
-				/>
-			</Suspense>
+			<Decks
+				list={decks}
+				colors={colors}
+				search={search}
+				selected={selected}
+			/>
 		</>
-	)
+	);
 };
 
 export default Catalog;
