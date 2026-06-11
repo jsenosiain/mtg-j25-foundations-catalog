@@ -1,17 +1,15 @@
-import type MTGCard from "@/types/MTGCard";
-
 interface MTGDeck {
-	artifacts?: MTGCard[];
+	artifacts?: string[];
 	color: string;
-	creatures?: MTGCard[];
-	enchantments?: MTGCard[];
+	creatures?: string[];
+	enchantments?: string[];
 	id: number;
-	instants?: MTGCard[];
+	instants?: string[];
 	iteration?: number | null;
-	lands?: MTGCard[];
+	lands?: string[];
 	name?: string;
-	planeswalkers?: MTGCard[];
-	sorceries?: MTGCard[];
+	planeswalkers?: string[];
+	sorceries?: string[];
 }
 
 export type { MTGDeck as default };

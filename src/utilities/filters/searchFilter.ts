@@ -1,20 +1,19 @@
-import type { MTGCard, MTGDeck } from "@/types";
+import type { MTGDeck } from "@/types";
+
+const allCardNames = (deck: MTGDeck): string[] => [
+	...(deck.artifacts ?? []),
+	...(deck.creatures ?? []),
+	...(deck.enchantments ?? []),
+	...(deck.instants ?? []),
+	...(deck.lands ?? []),
+	...(deck.planeswalkers ?? []),
+	...(deck.sorceries ?? []),
+];
 
 const searchFilter = (search: string) => (deck: MTGDeck) => {
-	const allCards = (deck: MTGDeck): MTGCard[] => { 
-		return [
-			...deck?.artifacts ?? [],
-			...deck?.creatures ?? [],
-			...deck?.enchantments ?? [],
-			...deck?.instants ?? [],
-			...deck?.lands ?? [],
-			...deck?.planeswalkers ?? [],
-			...deck?.sorceries ?? [],
-		]; 
-	};
-
-	return !search.trim() ||
-		allCards(deck).some((c) => c.name.toLowerCase().includes(search.trim().toLowerCase()));
+	const needle = search.trim().toLowerCase();
+	if (!needle) return true;
+	return allCardNames(deck).some((name) => name.toLowerCase().includes(needle));
 };
 
 export default searchFilter;

@@ -1,26 +1,23 @@
-import { use } from "react";
 import type { MTGDeck } from "@/types";
 import { useSavedDecks } from "@/hooks";
 
 const COLOR_ORDER = ["white", "blue", "black", "red", "green", "multi"];
 
 interface ColorFilterProps {
-	decksPromise: Promise<MTGDeck[]>;
+	list: MTGDeck[];
 	colorFilters: string[];
 	toggleColor: (color: string) => void;
 }
 
-const ColorFilter = ({ decksPromise, colorFilters, toggleColor }: ColorFilterProps) => {
-	const list = use(decksPromise); 
-
+const ColorFilter = ({ list, colorFilters, toggleColor }: ColorFilterProps) => {
 	const { isSaved } = useSavedDecks();
-	const savedList = list.filter((deck) => isSaved(deck.id));	
+	const savedList = list.filter((deck) => isSaved(deck.id));
 
 	const initialCounts = { black: 0, blue: 0, green: 0, multi: 0, red: 0, white: 0 };
 	const savedCounts = savedList.reduce((acc, deck) => ({
 		...acc,
 		[deck.color]: (acc[deck.color as keyof typeof acc] || 0) + 1,
-	}), initialCounts);	
+	}), initialCounts);
 
 	const handleToggleColor = (color: string) => () => {
 		toggleColor(color);
@@ -38,7 +35,7 @@ const ColorFilter = ({ decksPromise, colorFilters, toggleColor }: ColorFilterPro
 				>{savedCounts[color as keyof typeof savedCounts]}</button>
 			))}
 		</div>
-	);	
+	);
 };
 
 export default ColorFilter;
