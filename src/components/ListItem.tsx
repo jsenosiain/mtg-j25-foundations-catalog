@@ -4,6 +4,14 @@ import Attributes from "./Attributes";
 import ManaCost from "./ManaCost";
 import OracleText from "./OracleText";
 
+type RARITY = "common" | "uncommon" | "rare" | "mythic";
+const RARITY_COLOR: { [key: RARITY]: string }  = {
+	common: "rgb(33,33,33)",
+	uncommon: "rgb(185,220,235)",
+	rare: "rgb(230,205,140)",
+	mythic: "rgb(209,81,45)"
+};
+
 export interface ListItemProps {
 	card: MTGCard;
 }
@@ -14,15 +22,17 @@ const ListItem = ({ card }: ListItemProps) => (
 			<summary className="flex justify-between gap-2">
 				<div className="flex flex-col gap-1">
 					<span className="truncate min-w-0">{card?.name}</span>
-					<span className="truncate min-w-0 text-xs">{card?.type_line}</span>
+					<span className="truncate min-w-0 text-xs flex gap-1 items-center">						
+						<span className={`w-2 h-2 rounded-full bg-[${RARITY_COLOR[card.rarity]}]`}></span>
+						<span>{card?.type_line}</span>
+					</span>
 				</div>
 				<div className="flex flex-col gap-1 h-full items-end">
-					<ManaCost cost={card?.mana_cost ?? ""} />						
-					<Attributes card={card} />
+					<ManaCost cost={card?.mana_cost ?? ""} />	
+					<Attributes card={card} />	
 				</div>
 			</summary>
-			<section className="flex flex-col gap-0 text-gray-400 px-2 py-2">
-				<span className="text-xs">{card?.rarity}</span>
+			<section className="flex flex-col gap-0 text-gray-400 px-2 py-0">
 				<OracleText card={card} />
 				<div className="flex flex-row justify-between text-xs">
 					<div>{card?.collector_number}</div>

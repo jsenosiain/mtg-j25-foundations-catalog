@@ -19,6 +19,8 @@ const List = ({ category, deck, cardsPromise }: ListProps) => {
 		.map((name) => cards.find((card) => card.name === name))
 		.filter((card): card is MTGCard => Boolean(card));
 
+		console.log("items", items.map((i) => i.rarity));
+
 	return (
 		<Activity mode={names.length === 0 ? "hidden" : "visible"}>
 			<details className="list" open>

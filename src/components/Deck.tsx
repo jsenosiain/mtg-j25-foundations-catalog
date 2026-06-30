@@ -44,7 +44,7 @@ const Deck = ({ deck }: DeckProps) => {
 							<List category="Enchantments" deck={deck} cardsPromise={cardsPromise} />
 							<List category="Instants" deck={deck} cardsPromise={cardsPromise} />
 							<List category="Sorceries" deck={deck} cardsPromise={cardsPromise} />
-							<List category="Lands" deck={deck} cardsPromise={cardsPromise} />
+							<List category="Lands" deck={deck} cardsPromise={cardsPromise} />							
 						</Suspense>
 					)}
 				</section>
