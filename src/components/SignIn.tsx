@@ -2,7 +2,7 @@ import { useState, type FormEvent } from "react";
 import { useAuth } from "@/hooks";
 
 const SignIn = () => {
-	const { signIn, signUp } = useAuth();
+	const { signIn, signUp, continueAsGuest } = useAuth();
 	const [mode, setMode] = useState<"signIn" | "signUp">("signIn");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -70,6 +70,13 @@ const SignIn = () => {
 					className="text-sm text-gray-600 underline w-full"
 				>
 					{isSignUp ? "Already have an account? Sign in" : "Need an account? Sign up"}
+				</button>
+				<button
+					type="button"
+					onClick={continueAsGuest}
+					className="text-sm text-gray-600 underline w-full"
+				>
+					Continue as guest
 				</button>
 				{status === "error" && error && <p className="text-sm text-red-700">{error}</p>}
 			</form>

@@ -1,2 +1,2 @@
 export { default as Store } from "./store";
-export { useSyncStatus } from "./storeOffline";
+export { useSyncStatus, setGuestMode, flushGuestWrites } from "./storeOffline";

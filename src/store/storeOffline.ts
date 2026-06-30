@@ -8,6 +8,12 @@ const LOCAL_KEY = "decks_offline";
 type Entry = { saved: boolean; updatedAt: number; synced: boolean };
 type LocalState = Record<number, Entry>;
 
+let guestMode = false;
+
+export const setGuestMode = (next: boolean) => {
+	guestMode = next;
+};
+
 const readLocal = (): LocalState => {
 	try {
 		return JSON.parse(localStorage.getItem(LOCAL_KEY) || "{}") as LocalState;
@@ -64,11 +70,41 @@ export const useSyncStatus = (): SyncStatus =>
 let syncInFlight: Promise<void> | null = null;
 
 const sync = (): Promise<void> => {
+	if (guestMode) {
+		setStatus({ state: "idle", pending: 0, lastError: null });
+		return Promise.resolve();
+	}
 	if (syncInFlight) return syncInFlight;
 	syncInFlight = runSync().finally(() => {
 		syncInFlight = null;
 	});
 	return syncInFlight;
+};
+
+export const flushGuestWrites = async (): Promise<void> => {
+	const userResult = await supabase.auth.getUser().catch(() => null);
+	const userId = userResult?.data.user?.id;
+	if (!userId) return;
+
+	const serverResult = await supabase.from(TABLE).select("deck_id");
+	const serverHas = new Set<number>();
+	if (!serverResult.error) {
+		for (const row of serverResult.data) serverHas.add(row.deck_id as number);
+	}
+
+	const state = readLocal();
+	const next: LocalState = { ...state };
+	for (const [idStr, entry] of Object.entries(state)) {
+		const id = Number(idStr);
+		if (entry.saved && !serverHas.has(id)) {
+			next[id] = { ...entry, synced: false };
+		} else {
+			next[id] = { ...entry, synced: true };
+		}
+	}
+	writeLocal(next);
+	setStatus({ pending: countPending(next) });
+	await sync().catch(() => {});
 };
 
 // LWW reconciliation: unsynced local ops are pushed; synced local trusts server.
@@ -158,7 +194,7 @@ const StoreOffline: Store = {
 
 	add: async (id) => {
 		const state = readLocal();
-		state[id] = { saved: true, updatedAt: Date.now(), synced: false };
+		state[id] = { saved: true, updatedAt: Date.now(), synced: guestMode };
 		writeLocal(state);
 		setStatus({ pending: countPending(state) });
 		sync().catch(() => {});
@@ -166,7 +202,7 @@ const StoreOffline: Store = {
 
 	remove: async (id) => {
 		const state = readLocal();
-		state[id] = { saved: false, updatedAt: Date.now(), synced: false };
+		state[id] = { saved: false, updatedAt: Date.now(), synced: guestMode };
 		writeLocal(state);
 		setStatus({ pending: countPending(state) });
 		sync().catch(() => {});

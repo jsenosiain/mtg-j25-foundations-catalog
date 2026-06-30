@@ -1,7 +1,13 @@
 import { useSyncStatus } from "@/store";
+import { useAuth } from "@/hooks";
 
 const SyncIndicator = () => {
 	const { state, pending } = useSyncStatus();
+	const { isGuest, session } = useAuth();
+
+	if (isGuest && !session) {
+		return <span className="text-xs text-gray-500">Local only</span>;
+	}
 
 	if (state === "syncing") {
 		return <span className="text-xs text-gray-500">Syncing…</span>;
