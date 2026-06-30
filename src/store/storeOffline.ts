@@ -3,27 +3,46 @@ import { supabase } from "./supabase";
 import type { Store } from "@/types";
 
 const TABLE = "saved_decks";
-const LOCAL_KEY = "decks_offline";
+const LOCAL_KEY_PREFIX = "decks_offline:";
+const GUEST_BUCKET = `${LOCAL_KEY_PREFIX}guest`;
 
 type Entry = { saved: boolean; updatedAt: number; synced: boolean };
 type LocalState = Record<number, Entry>;
 
-let guestMode = false;
+export type ActiveUser =
+	| { kind: "none" }
+	| { kind: "guest" }
+	| { kind: "user"; id: string };
 
-export const setGuestMode = (next: boolean) => {
-	guestMode = next;
+let activeUser: ActiveUser = { kind: "none" };
+
+const bucketKey = (): string | null => {
+	if (activeUser.kind === "guest") return GUEST_BUCKET;
+	if (activeUser.kind === "user") return `${LOCAL_KEY_PREFIX}${activeUser.id}`;
+	return null;
 };
 
-const readLocal = (): LocalState => {
+const readBucket = (key: string): LocalState => {
 	try {
-		return JSON.parse(localStorage.getItem(LOCAL_KEY) || "{}") as LocalState;
+		return JSON.parse(localStorage.getItem(key) || "{}") as LocalState;
 	} catch {
 		return {};
 	}
 };
 
+const writeBucket = (key: string, state: LocalState) => {
+	localStorage.setItem(key, JSON.stringify(state));
+};
+
+const readLocal = (): LocalState => {
+	const key = bucketKey();
+	return key ? readBucket(key) : {};
+};
+
 const writeLocal = (state: LocalState) => {
-	localStorage.setItem(LOCAL_KEY, JSON.stringify(state));
+	const key = bucketKey();
+	if (!key) return;
+	writeBucket(key, state);
 };
 
 const savedIds = (state: LocalState): number[] =>
@@ -31,8 +50,31 @@ const savedIds = (state: LocalState): number[] =>
 		.filter(([, v]) => v.saved)
 		.map(([k]) => Number(k));
 
+const buildSavedSet = (state: LocalState): ReadonlySet<number> =>
+	new Set(savedIds(state));
+
 const countPending = (state: LocalState): number =>
 	Object.values(state).filter((e) => !e.synced).length;
+
+let savedSnapshot: ReadonlySet<number> = new Set();
+const savedListeners = new Set<() => void>();
+
+const notifySaved = () => {
+	savedSnapshot = buildSavedSet(readLocal());
+	for (const fn of savedListeners) fn();
+};
+
+const subscribeSaved = (fn: () => void) => {
+	savedListeners.add(fn);
+	return () => {
+		savedListeners.delete(fn);
+	};
+};
+
+const getSavedSnapshot = () => savedSnapshot;
+
+export const useSavedIds = (): ReadonlySet<number> =>
+	useSyncExternalStore(subscribeSaved, getSavedSnapshot, getSavedSnapshot);
 
 export type SyncStatus = {
 	state: "idle" | "syncing" | "synced" | "error";
@@ -67,11 +109,24 @@ const getSnapshot = () => status;
 export const useSyncStatus = (): SyncStatus =>
 	useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 
+export const setActiveUser = (next: ActiveUser) => {
+	activeUser = next;
+	notifySaved();
+	setStatus({
+		state: "idle",
+		pending: countPending(readLocal()),
+		lastError: null,
+	});
+	if (next.kind === "user") {
+		sync().catch(() => {});
+	}
+};
+
 let syncInFlight: Promise<void> | null = null;
 
 const sync = (): Promise<void> => {
-	if (guestMode) {
-		setStatus({ state: "idle", pending: 0, lastError: null });
+	if (activeUser.kind !== "user") {
+		setStatus({ state: "idle", pending: countPending(readLocal()), lastError: null });
 		return Promise.resolve();
 	}
 	if (syncInFlight) return syncInFlight;
@@ -81,30 +136,28 @@ const sync = (): Promise<void> => {
 	return syncInFlight;
 };
 
-export const flushGuestWrites = async (): Promise<void> => {
-	const userResult = await supabase.auth.getUser().catch(() => null);
-	const userId = userResult?.data.user?.id;
-	if (!userId) return;
+export const migrateGuestToUser = async (userId: string): Promise<void> => {
+	const userBucket = `${LOCAL_KEY_PREFIX}${userId}`;
+	const guestState = readBucket(GUEST_BUCKET);
+	const userState = readBucket(userBucket);
 
-	const serverResult = await supabase.from(TABLE).select("deck_id");
-	const serverHas = new Set<number>();
-	if (!serverResult.error) {
-		for (const row of serverResult.data) serverHas.add(row.deck_id as number);
+	const merged: LocalState = { ...userState };
+	for (const [idStr, entry] of Object.entries(guestState)) {
+		merged[Number(idStr)] = { ...entry, synced: false };
 	}
 
-	const state = readLocal();
-	const next: LocalState = { ...state };
-	for (const [idStr, entry] of Object.entries(state)) {
-		const id = Number(idStr);
-		if (entry.saved && !serverHas.has(id)) {
-			next[id] = { ...entry, synced: false };
-		} else {
-			next[id] = { ...entry, synced: true };
-		}
+	writeBucket(userBucket, merged);
+	try {
+		localStorage.removeItem(GUEST_BUCKET);
+	} catch {
+		/* ignore */
 	}
-	writeLocal(next);
-	setStatus({ pending: countPending(next) });
-	await sync().catch(() => {});
+
+	if (activeUser.kind === "user" && activeUser.id === userId) {
+		notifySaved();
+		setStatus({ pending: countPending(merged) });
+		await sync().catch(() => {});
+	}
 };
 
 // LWW reconciliation: unsynced local ops are pushed; synced local trusts server.
@@ -171,6 +224,7 @@ const runSync = async (): Promise<void> => {
 	}
 
 	writeLocal(next);
+	notifySaved();
 
 	const pending = countPending(next);
 	if (pushError) {
@@ -193,17 +247,21 @@ const StoreOffline: Store = {
 	},
 
 	add: async (id) => {
+		if (activeUser.kind === "none") return;
 		const state = readLocal();
-		state[id] = { saved: true, updatedAt: Date.now(), synced: guestMode };
+		state[id] = { saved: true, updatedAt: Date.now(), synced: activeUser.kind === "guest" };
 		writeLocal(state);
+		notifySaved();
 		setStatus({ pending: countPending(state) });
 		sync().catch(() => {});
 	},
 
 	remove: async (id) => {
+		if (activeUser.kind === "none") return;
 		const state = readLocal();
-		state[id] = { saved: false, updatedAt: Date.now(), synced: guestMode };
+		state[id] = { saved: false, updatedAt: Date.now(), synced: activeUser.kind === "guest" };
 		writeLocal(state);
+		notifySaved();
 		setStatus({ pending: countPending(state) });
 		sync().catch(() => {});
 	},

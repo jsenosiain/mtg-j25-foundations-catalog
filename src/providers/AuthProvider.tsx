@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/store/supabase";
-import { setGuestMode, flushGuestWrites } from "@/store";
+import { setActiveUser, migrateGuestToUser } from "@/store";
 import { AuthContext } from "./AuthContext";
 
 const GUEST_KEY = "guest_mode";
@@ -21,9 +21,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 	const wasGuestRef = useRef<boolean>(isGuest);
 
 	useEffect(() => {
-		setGuestMode(isGuest);
+		if (session) {
+			setActiveUser({ kind: "user", id: session.user.id });
+		} else if (isGuest) {
+			setActiveUser({ kind: "guest" });
+		} else {
+			setActiveUser({ kind: "none" });
+		}
 		wasGuestRef.current = isGuest;
-	}, [isGuest]);
+	}, [session, isGuest]);
 
 	useEffect(() => {
 		supabase.auth.getSession().then(({ data }) => {
@@ -32,17 +38,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 		});
 
 		const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => {
-			setSession(s);
 			if (s && wasGuestRef.current) {
 				try {
 					localStorage.removeItem(GUEST_KEY);
 				} catch {
 					/* ignore */
 				}
+				migrateGuestToUser(s.user.id).catch(() => {});
 				setIsGuest(false);
-				setGuestMode(false);
-				flushGuestWrites().catch(() => {});
 			}
+			setSession(s);
 		});
 
 		return () => sub.subscription.unsubscribe();

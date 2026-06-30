@@ -1,48 +1,17 @@
-import { useCallback, useEffect, useState } from "react";
-import { Store } from "@/store";
-import { useAuth } from "@/hooks";
-
-const EMPTY_SET = new Set<number>();
+import { useCallback } from "react";
+import { Store, useSavedIds } from "@/store";
 
 const useSavedDecks = () => {
-	const { session } = useAuth();
-	const [savedIds, setSavedIds] = useState<Set<number> | null>(null);
+	const savedIds = useSavedIds();
 
-	useEffect(() => {
-		if (!session) {
-			return;
-		}
-
-		Store.list().then((ids) => setSavedIds(new Set(ids)));
-	}, [session]);
-
-	const isSaved = useCallback((deckId: number) => (savedIds ?? EMPTY_SET).has(deckId), [savedIds]);
+	const isSaved = useCallback((deckId: number) => savedIds.has(deckId), [savedIds]);
 
 	const toggle = useCallback(async (deckId: number) => {
-		const willSave = !(savedIds ?? EMPTY_SET).has(deckId);
-
-		setSavedIds((prev) => {
-			const next = new Set(prev ?? EMPTY_SET);
-			if (willSave) next.add(deckId);
-			else next.delete(deckId);
-			return next;
-		});
-
-		try {
-			if (willSave) await Store.add(deckId);
-			else await Store.remove(deckId);
-		} catch (err) {
-			setSavedIds((prev) => {
-				const next = new Set(prev ?? EMPTY_SET);
-				if (willSave) next.delete(deckId);
-				else next.add(deckId);
-				return next;
-			});
-			throw err;
-		}
+		if (savedIds.has(deckId)) await Store.remove(deckId);
+		else await Store.add(deckId);
 	}, [savedIds]);
 
-	return { isSaved, toggle, loading: savedIds === null };
+	return { isSaved, toggle, loading: false };
 };
 
 export default useSavedDecks;
