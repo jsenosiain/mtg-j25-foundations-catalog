@@ -28,7 +28,7 @@ const ListItem = ({ card }: ListItemProps) => {
 					<div className="flex flex-col gap-1">
 						<span className="truncate min-w-0">{card?.name}</span>
 						<span className="truncate min-w-0 text-xs flex gap-1 items-center">						
-							<span className={`w-2 h-2 rounded-full bg-[${rarityColor}]`}></span>
+							<span className="w-2 h-2 rounded-full" style={{ backgroundColor: rarityColor }}></span>
 							<span>{card?.type_line}</span>
 						</span>
 					</div>
